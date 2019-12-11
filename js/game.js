@@ -4,7 +4,6 @@ class Road {
         this.y = y;
 
         this.image = new Image();
-
         this.image.src = image;
     }
 
@@ -13,6 +12,48 @@ class Road {
 
         if (this.y > window.innerHeight) { //Если изображение ушло за край холста, то меняем положение
             this.y = road.y - this.image.height + speed; //Новое положение указывается с учётом второго фона
+        }
+    }
+}
+
+class Car {
+    constructor(image, x, y) {
+        this.x = x;
+        this.y = y;
+
+        this.image = new Image();
+        this.image.src = image;
+    }
+
+    Update() {
+        this.y += speed;
+    }
+
+    Move(v, d) {
+        if (v == "x") { //Перемещение по оси X
+
+            this.x += d; //Смещение
+
+            //Если при смещении объект выходит за края холста, то изменения откатываются
+            if (this.x + this.image.width * scale > canvas.width) {
+                this.x -= d;
+            }
+
+            if (this.x < 0) {
+                this.x = 0;
+            }
+        } else { //Перемещение по оси Y
+
+            this.y += d;
+
+            //Если при смещении объект выходит за края холста, то изменения откатываются
+            if (this.y + this.image.height * scale > canvas.height) {
+                this.y -= d;
+            }
+
+            if (this.y < 0) {
+                this.y = 0;
+            }
         }
     }
 }
@@ -53,7 +94,12 @@ const KeyDown = (e) => {
 
 window.addEventListener("keydown", function(e) { KeyDown(e); }); //Получение нажатий с клавиатуры
 
-let objects = []; //Массив игровых объектов
+let objects = [ 
+new Car("img/car.png", 15, 10)
+]; //Массив игровых объектов
+
+let player = 0;
+
 let roads = [
     new Road("img/road.jpg", 0),
     new Road("img/road.jpg", 626)
@@ -92,4 +138,4 @@ const Stop = () => {
     clearInterval(timer); //Остановка обновления
 }
 
-Start ();
+Start();
