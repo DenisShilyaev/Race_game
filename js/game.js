@@ -61,7 +61,7 @@ class Car {
 let canvas = document.getElementById("canvas"); //Получение холста из DOM
 let ctx = canvas.getContext("2d"); //Получение контекста
 
-let scale = 0.1; //Масштаб машин
+let scale = 0.2; //Масштаб машин
 let speed = 4; //Скорость игры
 
 const Resize = () => {
@@ -71,31 +71,45 @@ const Resize = () => {
 
 Resize(); // При загрузке страницы задаётся размер холста
 
+const RandomInteger = (min, max) => { //Функция генерации случайных чисел
+    let rand = min - 0.5 + Math.random() * (max - min + 1);
+    return Math.round(rand);
+}
+
 window.addEventListener("resize", Resize); //При изменении размеров окна будут меняться размеры холста
 
 const KeyDown = (e) => {
     switch (e.keyCode) {
         case 37: //Влево
+            objects[player].Move("x", -speed);
             break;
 
         case 39: //Вправо
+            objects[player].Move("x", speed);
             break;
 
         case 38: //Вверх
+            objects[player].Move("y", -speed);
             break;
 
         case 40: //Вниз
+            objects[player].Move("y", speed);
             break;
 
         case 27: //Esc
+            if (timer == null) {
+                Start();
+            } else {
+                Stop();
+            }
             break;
     }
 }
 
 window.addEventListener("keydown", function(e) { KeyDown(e); }); //Получение нажатий с клавиатуры
 
-let objects = [ 
-new Car("img/car.png", 15, 10)
+let objects = [
+    new Car("img/car.png", 15, 10)
 ]; //Массив игровых объектов
 
 let player = 0;
@@ -104,8 +118,6 @@ let roads = [
     new Road("img/road.jpg", 0),
     new Road("img/road.jpg", 626)
 ]; //Массив с фонами
-
-let player = null; //Объект, которым управляет игрок, — тут будет указан номер объекта в массиве objects
 
 const Draw = () => { //Работа с графикой
     ctx.clearRect(0, 0, canvas.width, canvas.height); //Очистка холста от предыдущего кадра
@@ -122,11 +134,30 @@ const Draw = () => { //Работа с графикой
             canvas.height //Высота изображения на холсте
         );
     }
+
+    for (var i = 0; i < objects.length; i++) {
+        ctx.drawImage(
+            objects[i].image, //Изображение для отрисовки
+            0, //Начальное положение по оси X на изображении
+            0, //Начальное положение по оси Y на изображении
+            objects[i].image.width, //Ширина изображения
+            objects[i].image.height, //Высота изображения
+            objects[i].x, //Положение по оси X на холсте
+            objects[i].y, //Положение по оси Y на холсте
+            objects[i].image.width * scale, //Ширина изображения на холсте, умноженная на масштаб
+            objects[i].image.height * scale //Высота изображения на холсте, умноженная на масштаб
+        );
+    }
 }
 
 const Update = () => { //Обновление игры
     roads[0].Update(roads[1]);
     roads[1].Update(roads[0]);
+
+    if (RandomInteger(0, 10000) > 9700) { //С определённой вероятностью создаем объект и добавляем его в массив objects
+        objects.push(new Car("img/car_red.png", RandomInteger(30, canvas.width - 50), RandomInteger(250, 400) * 1));
+    }
+
     Draw();
 }
 
