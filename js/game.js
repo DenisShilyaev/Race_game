@@ -20,13 +20,19 @@ class Car {
     constructor(image, x, y) {
         this.x = x;
         this.y = y;
+        this.dead = false; //Если true, то машина удаляется из массива "object"
+
 
         this.image = new Image();
         this.image.src = image;
     }
 
-    Update() {
+    Update() { //Движение машинок соперников вниз
         this.y += speed;
+
+        if (this.y > canvas.height + 50) { //Удаляем машину из массива "object" если она уехала вниз за пределы поля игры
+            this.dead = true;
+        }
     }
 
     Move(v, d) {
@@ -62,7 +68,7 @@ let canvas = document.getElementById("canvas"); //Получение холст�
 let ctx = canvas.getContext("2d"); //Получение контекста
 
 let scale = 0.2; //Масштаб машин
-let speed = 4; //Скорость игры
+let speed = 5; //Скорость игры
 
 const Resize = () => {
     canvas.width = window.innerWidth;
@@ -110,9 +116,9 @@ window.addEventListener("keydown", function(e) { KeyDown(e); }); //Получе�
 
 let objects = [
     new Car("img/car.png", 15, 10)
-]; //Массив игровых объектов
+]; //Массив машин (игровые объекты)
 
-let player = 0;
+let player = 0; //Номер машины игрока в массиве машин (objects)
 
 let roads = [
     new Road("img/road.jpg", 0),
@@ -155,7 +161,22 @@ const Update = () => { //Обновление игры
     roads[1].Update(roads[0]);
 
     if (RandomInteger(0, 10000) > 9700) { //С определённой вероятностью создаем объект и добавляем его в массив objects
-        objects.push(new Car("img/car_red.png", RandomInteger(30, canvas.width - 50), RandomInteger(250, 400) * 1));
+        objects.push(new Car("img/car_red.png", RandomInteger(30, canvas.width - 50), RandomInteger(250, 400) * -1));
+    }
+
+    var hasDead = false;
+
+    for (var i = 0; i < objects.length; i++) {
+        if (i != player) {
+            objects[i].Update();
+
+            if (objects[i].dead) {
+                hasDead = true;
+            }
+        }
+    }
+    if (hasDead) {
+        objects.shift();
     }
 
     Draw();
