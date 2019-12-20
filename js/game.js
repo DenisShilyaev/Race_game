@@ -127,7 +127,7 @@ const KeyDown = (e) => {
 
 window.addEventListener("keydown", function(e) { KeyDown(e); }); //Получение нажатий с клавиатуры
 
-let player = new Car("img/car.png", 15, 10); //Машина игрока
+let player = new Car("img/car.png", 200, 200); //Машина игрока
 
 let objects = []; //Массив машин (игровые объекты)
 
@@ -135,6 +135,8 @@ let roads = [
     new Road("img/road.jpg", 0),
     new Road("img/road.jpg", 626)
 ]; //Массив с фонами
+
+let score = 0; //Счет - количество обогнанных машин
 
 const Draw = () => { //Работа с графикой
     ctx.clearRect(0, 0, canvas.width, canvas.height); //Очистка холста от предыдущего кадра
@@ -178,7 +180,13 @@ const Draw = () => { //Работа с графикой
             objects[i].image.height * scale //Высота изображения на холсте, умноженная на масштаб
         );
     }
+
+    ctx.fillStyle = "#000";
+    ctx.font = "24px Verdana";
+    ctx.fillText("Счет: " + score, 10, canvas.height - 20)
 }
+
+
 
 const Update = () => { //Обновление игры
     roads[0].Update(roads[1]);
@@ -198,6 +206,7 @@ const Update = () => { //Обновление игры
     }
     if (hasDead) {
         objects.shift();
+        score += 1;
     }
 
     let hit = false;
@@ -206,8 +215,11 @@ const Update = () => { //Обновление игры
         hit = player.Collide(objects[i]);
 
         if (hit) {
-            alert("Вы врезались!");
+            let endGame = confirm(`Игра окончена. Ваши очки: ${score}. Сыграете еще?`);
             Stop();
+            if (endGame) {
+                location.reload()
+            }
             break;
         }
     }
