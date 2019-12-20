@@ -35,6 +35,19 @@ class Car {
         }
     }
 
+    Collide(car) {
+        let hit = false;
+
+        if (this.y < car.y + car.image.height * scale && this.y + this.image.height * scale > car.y) { //Если объекты находятся на одной линии по горизонтали
+
+            if (this.x + this.image.width * scale > car.x && this.x < car.x + car.image.width * scale) { //Если объекты находятся на одной линии по вертикали
+                hit = true;
+            }
+        }
+
+        return hit;
+    }
+
     Move(v, d) {
         if (v == "x") { //Перемещение по оси X
 
@@ -87,19 +100,19 @@ window.addEventListener("resize", Resize); //При изменении разм�
 const KeyDown = (e) => {
     switch (e.keyCode) {
         case 37: //Влево
-            objects[player].Move("x", -speed);
+            player.Move("x", -speed);
             break;
 
         case 39: //Вправо
-            objects[player].Move("x", speed);
+            player.Move("x", speed);
             break;
 
         case 38: //Вверх
-            objects[player].Move("y", -speed);
+            player.Move("y", -speed);
             break;
 
         case 40: //Вниз
-            objects[player].Move("y", speed);
+            player.Move("y", speed);
             break;
 
         case 27: //Esc
@@ -114,11 +127,9 @@ const KeyDown = (e) => {
 
 window.addEventListener("keydown", function(e) { KeyDown(e); }); //Получение нажатий с клавиатуры
 
-let objects = [
-    new Car("img/car.png", 15, 10)
-]; //Массив машин (игровые объекты)
+let player = new Car("img/car.png", 15, 10); //Машина игрока
 
-let player = 0; //Номер машины игрока в массиве машин (objects)
+let objects = []; //Массив машин (игровые объекты)
 
 let roads = [
     new Road("img/road.jpg", 0),
@@ -127,7 +138,7 @@ let roads = [
 
 const Draw = () => { //Работа с графикой
     ctx.clearRect(0, 0, canvas.width, canvas.height); //Очистка холста от предыдущего кадра
-    for (var i = 0; i < roads.length; i++) {
+    for (let i = 0; i < roads.length; i++) { //Отрисовка дорожного полотна
         ctx.drawImage(
             roads[i].image, //Изображение для отрисовки
             0, //Начальное положение по оси X на изображении
@@ -140,8 +151,21 @@ const Draw = () => { //Работа с графикой
             canvas.height //Высота изображения на холсте
         );
     }
+    for (let i = 0; i < objects.length; i++) { //Отрисовка машины игрока
+        ctx.drawImage(
+            player.image, //Изображение для отрисовки
+            0, //Начальное положение по оси X на изображении
+            0, //Начальное положение по оси Y на изображении
+            player.image.width, //Ширина изображения
+            player.image.height, //Высота изображения
+            player.x, //Положение по оси X на холсте
+            player.y, //Положение по оси Y на холсте
+            player.image.width * scale, //Ширина изображения на холсте, умноженная на масштаб
+            player.image.height * scale //Высота изображения на холсте, умноженная на масштаб
+        );
+    }
 
-    for (var i = 0; i < objects.length; i++) {
+    for (let i = 0; i < objects.length; i++) { //Отрисовка машин соперников
         ctx.drawImage(
             objects[i].image, //Изображение для отрисовки
             0, //Начальное положение по оси X на изображении
@@ -164,19 +188,28 @@ const Update = () => { //Обновление игры
         objects.push(new Car("img/car_red.png", RandomInteger(30, canvas.width - 50), RandomInteger(250, 400) * -1));
     }
 
-    var hasDead = false;
+    let hasDead = false;
 
-    for (var i = 0; i < objects.length; i++) {
-        if (i != player) {
-            objects[i].Update();
-
-            if (objects[i].dead) {
-                hasDead = true;
-            }
+    for (let i = 0; i < objects.length; i++) {
+        objects[i].Update();
+        if (objects[i].dead) {
+            hasDead = true;
         }
     }
     if (hasDead) {
         objects.shift();
+    }
+
+    let hit = false;
+
+    for (let i = 0; i < objects.length; i++) {
+        hit = player.Collide(objects[i]);
+
+        if (hit) {
+            alert("Вы врезались!");
+            Stop();
+            break;
+        }
     }
 
     Draw();
