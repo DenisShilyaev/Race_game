@@ -36,7 +36,7 @@ class Car {
     }
 
     Collide(car) { //Обработка коллизий (столкновений) машин.
-        let hit = false;
+        let hit = false; //Если true значит машины столкнулись
 
         if (this.y < car.y + car.image.height * scale && this.y + this.image.height * scale > car.y) { //Если объекты находятся на одной линии по горизонтали
 
@@ -49,9 +49,9 @@ class Car {
     }
 
     Move(v, d) {
-        if (v == "x") { //Перемещение по оси X
+        if (v == "x") { //Если перемещеие по оси X
 
-            this.x += d; //Смещение
+            this.x += d; //Смещение по оси X на переданное расстояние
 
             //Если при смещении объект выходит за края холста, то изменения откатываются
             if (this.x + this.image.width * scale > canvas.width) {
@@ -61,9 +61,9 @@ class Car {
             if (this.x < 0) {
                 this.x = 0;
             }
-        } else { //Перемещение по оси Y
+        } else { //Если перемещеие по оси Y
 
-            this.y += d;
+            this.y += d; //Смещение по оси Y на переданное расстояние
 
             //Если при смещении объект выходит за края холста, то изменения откатываются
             if (this.y + this.image.height * scale > canvas.height) {
@@ -83,7 +83,7 @@ let ctx = canvas.getContext("2d"); //Получение контекста
 let scale = 0.1; //Масштаб машин
 let speed = 5; //Скорость игры
 
-const Resize = () => {
+const Resize = () => { //Задаем размер холста равный размеру окна
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 }
@@ -181,23 +181,24 @@ const Draw = () => { //Работа с графикой
         );
     }
 
-    ctx.fillStyle = "#000";
-    ctx.font = "24px Verdana";
-    ctx.fillText("Счет: " + score, 10, canvas.height - 20)
+    ctx.fillStyle = "#000"; //Задаем цвет текста для отображения текущего счета
+    ctx.font = "24px Verdana"; //Задаем размер и стиль текста для отображения текущего счета
+    ctx.fillText("Счет: " + score, 10, canvas.height - 20) //Выводим текущий счет в заданых координатах
+    ctx.fillText("Скорость игры: " + speed, 10, canvas.height - 50) //Выводим текущую скорость игры в заданых координатах
 }
 
 
 
 const Update = () => { //Обновление игры
-    roads[0].Update(roads[1]);
+    roads[0].Update(roads[1]); //Обновляем дорожное полотно
     roads[1].Update(roads[0]);
 
-    if (RandomInteger(0, 10000) > 9700) { //С определённой вероятностью создаем объект и добавляем его в массив objects
+    if (RandomInteger(0, 10000) > 9700) { //С определённой вероятностью создаем машину (объект) и добавляем его в массив objects
         objects.push(new Car("img/car_red.png", RandomInteger(30, canvas.width - 50), RandomInteger(250, 400) * -1));
     }
 
     for (let i = 0; i < objects.length - 1; i++) { //Ищем машины соперников, которые появились с наложением друг на друга
-        if (objects[i].Collide(objects[i + 1])) {//Если мышины наложены, то переопределяем координаты одной из машин на новые (случайные)
+        if (objects[i].Collide(objects[i + 1])) { //Если машины наложены, то переопределяем координаты одной из машин на новые (случайные)
             objects[i + 1].x = RandomInteger(30, canvas.width - 50);
             objects[i + 1].y = RandomInteger(250, 400) * -1;
         }
@@ -205,24 +206,24 @@ const Update = () => { //Обновление игры
 
     let hasDead = false;
 
-    for (let i = 0; i < objects.length; i++) { //Ищем машины, уехали вниз за пределы поля игры
+    for (let i = 0; i < objects.length; i++) { //Ищем машины соперников, которые уехали вниз за пределы поля игры
         objects[i].Update();
         if (objects[i].dead) {
             hasDead = true;
         }
     }
-    if (hasDead) {
+    if (hasDead) { //Если машина соперников уехала за пределы поля игры, то удаляем её из массива и увеличиваем счет на +1
         objects.shift();
         score += 1;
     }
 
-    let hit = false;
+    let hit = false; //Если true, значит произошло столкновение машины игрока с машиной соперника
 
     for (let i = 0; i < objects.length; i++) {
-        hit = player.Collide(objects[i]);
+        hit = player.Collide(objects[i]); //Определяем столкновение машины игрока с машиной соперника
 
-        if (hit) {
-            let endGame = confirm(`Игра окончена. Ваши очки: ${score}. Сыграете еще?`);
+        if (hit) { // Если столкновение произошло, то останавливаем игру и выводим сообщение о окончании игры 
+            let endGame = confirm(`Игра окончена. Ваши очки: ${score}, скорость игры:${speed}. Сыграете еще?`);
             Stop();
             if (endGame) {
                 location.reload()
@@ -231,11 +232,45 @@ const Update = () => { //Обновление игры
         }
     }
 
+    if (score == 50) {
+        score += 10
+
+    }
+
     Draw();
 }
 
+const Announcement = (text) => {
+    
+    let letters = document.getElementsByClassName("letters");
+    letters.innerHTML = "много много слов";
+
+    let textWrapper = document.querySelector('.ml7 .letters');
+    textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
+
+    anime.timeline({ loop: false })
+        .add({
+            targets: '.ml7 .letter',
+            translateY: ["1.1em", 0],
+            translateX: ["0.55em", 0],
+            translateZ: 0,
+            rotateZ: [180, 0],
+            duration: 750,
+            easing: "easeOutExpo",
+            delay: (el, i) => 50 * i
+        }).add({
+            targets: '.ml7',
+            opacity: 0,
+            duration: 1000,
+            easing: "easeOutExpo",
+            delay: 1000
+        });
+}
+
+
 const Start = () => {
     timer = setInterval(Update, 1000 / 60); //Состояние игры будет обновляться 60 раз в секунду — при такой частоте обновление происходящего будет казаться очень плавным
+    Announcement()
 }
 
 const Stop = () => {

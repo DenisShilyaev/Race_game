@@ -4,16 +4,49 @@ html {
     height: 100%;
     padding: 0px;
     margin: 0px;
-    overflow: hidden;  /* Для скрытия содержания элемента, которое выходит за его область */
+    overflow: hidden;
+    /* Для скрытия содержания элемента, которое выходит за его область */
 }
 
 .wrapper {
     width: 100%;
     height: 100%;
+    z-index: 1;
 }
 
 .canvas {
     width: 100%;
     height: 100%;
     background: #000;
+}
+
+/* ANIMATION TEXT */
+
+.ml7 {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    font-weight: 900;
+    font-size: 3.7em;
+    z-index: 2
+}
+
+.ml7 .text-wrapper {
+    position: relative;
+    display: inline-block;
+    padding-top: 0.2em;
+    padding-right: 0.05em;
+    padding-bottom: 0.2em;
+    overflow: hidden;
+}
+
+.ml7 .letter {
+    transform-origin: 0 100%; /* Устанавливает координаты точки, относительно которой будет происходить трансформация элемента */
+    display: inline-block;
+    line-height: 1em;
+}
+
+.text-wrapper {
+    float: right;
 }
