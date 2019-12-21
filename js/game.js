@@ -97,6 +97,26 @@ const RandomInteger = (min, max) => { //Функция генерации слу
 
 window.addEventListener("resize", Resize); //При изменении размеров окна будут меняться размеры холста
 
+let overlay = document.querySelector('.overlay');
+let modal = document.querySelector('.modal');
+
+modal.addEventListener("click", function(e) { GameSetup(e); }); //Получение нажатий с клавиатуры для игры
+
+const GameSetup = (e) => {
+    if (e.target.classList.contains('easy')) { //Настраиваем уровни сложности игры
+        speed = 4;
+    } else if (e.target.classList.contains('normal')) {
+        speed = 5;
+    } else if (e.target.classList.contains('hard')) {
+        speed = 6;
+    }
+    if (e.target.classList.contains('button')) { //Делаем меню невидимым и начинаем игру после нажатия на любую кнопку в меню
+        modal.style.display = 'none';
+        overlay.style.display = 'none';
+        Start();
+    }
+}
+
 const KeyDown = (e) => {
     switch (e.keyCode) {
         case 37: //Влево
@@ -125,7 +145,7 @@ const KeyDown = (e) => {
     }
 }
 
-window.addEventListener("keydown", function(e) { KeyDown(e); }); //Получение нажатий с клавиатуры
+window.addEventListener("keydown", function(e) { KeyDown(e); }); //Получение нажатий с клавиатуры для игры
 
 let player = new Car("img/car.png", canvas.width / 2, canvas.height / 2); //Машина игрока
 
@@ -216,20 +236,20 @@ const Announcement = (text) => { //Вывод аниммированного с�
 
 const CeckLevel = () => {
     if (score == 5) {
-        Announcement("Уровень №3!");
+        Announcement("Уровень №2!");
         score += 3;
-        speed += 3;
+        speed += 1;
     } else if (score == 25) {
         score += 3;
-        speed += 3;
+        speed += 1;
         Announcement("Уровень №3!");
     } else if (score == 45) {
         score += 3;
-        speed += 3;
+        speed += 1;
         Announcement("Уровень №4!");
     } else if (score == 70) {
         score += 3;
-        speed += 3;
+        speed += 1;
         Announcement("Уровень №5!");
     }
 }
@@ -268,7 +288,7 @@ const Update = () => { //Обновление игры
         hit = player.Collide(objects[i]); //Определяем столкновение машины игрока с машиной соперника
 
         if (hit) { // Если столкновение произошло, то останавливаем игру и выводим сообщение о окончании игры 
-            let endGame = confirm(`Игра окончена. Ваши очки: ${score}, скорость игры:${speed}. Сыграете еще?`);
+            let endGame = confirm(`Конец игры.\r\nВаши очки: ${score}.\r\nДостигнутая скорость игры: ${speed}.\r\nСыграете еще раз?`);
             Stop();
             if (endGame) {
                 location.reload()
@@ -290,5 +310,3 @@ const Start = () => {
 const Stop = () => {
     clearInterval(timer); //Остановка обновления
 }
-
-Start();
