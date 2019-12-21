@@ -80,7 +80,7 @@ class Car {
 let canvas = document.getElementById("canvas"); //Получение холста из DOM
 let ctx = canvas.getContext("2d"); //Получение контекста
 
-let scale = 0.1; //Масштаб машин
+let scale = 0.11; //Масштаб машин
 let speed = 5; //Скорость игры
 
 const Resize = () => { //Задаем размер холста равный размеру окна
@@ -147,7 +147,7 @@ const KeyDown = (e) => {
 
 window.addEventListener("keydown", function(e) { KeyDown(e); }); //Получение нажатий с клавиатуры для игры
 
-let player = new Car("img/car.png", canvas.width / 2, canvas.height / 2); //Машина игрока
+let player = new Car("img/car_player.png", canvas.width / 2, canvas.height / 2); //Машина игрока
 
 let objects = []; //Массив машин (игровые объекты)
 
@@ -258,14 +258,26 @@ const Update = () => { //Обновление игры
     roads[0].Update(roads[1]); //Обновляем дорожное полотно
     roads[1].Update(roads[0]);
 
-    if (RandomInteger(0, 10000) > 9700) { //С определённой вероятностью создаем машину (объект) и добавляем его в массив objects
-        objects.push(new Car("img/car_red.png", RandomInteger(30, canvas.width - 50), RandomInteger(250, 400) * -1));
+    carRivalX = RandomInteger(30, canvas.width - 50);//Случайная координата Х появления новой машины соперника
+    carRivalY = RandomInteger(250, 400) * -1; //Случайная координата У появления новой машины соперника
+    random0_10000 = RandomInteger(0, 10000); //Случайное число от 0 до 10000 
+
+    if (9700 < random0_10000 && random0_10000 < 9750) { //С определённой вероятностью создаем машину (объект) и добавляем его в массив objects
+        objects.push(new Car("img/car_rival_1.png", carRivalX, carRivalY));
+    } else if (9751 < random0_10000 && random0_10000 < 9800) {
+        objects.push(new Car("img/car_rival_2.png", carRivalX, carRivalY));
+    }  else if (9801 < random0_10000 && random0_10000 < 9850) {
+        objects.push(new Car("img/car_rival_3.png", carRivalX, carRivalY));
+    } else if (9851 < random0_10000 && random0_10000 < 9900) {
+        objects.push(new Car("img/car_rival_4.png", carRivalX, carRivalY));
+    } else if (9950 < random0_10000 && random0_10000 < 10000) {
+        objects.push(new Car("img/car_rival_5.png", carRivalX, carRivalY));
     }
 
     for (let i = 0; i < objects.length - 1; i++) { //Ищем машины соперников, которые появились с наложением друг на друга
         if (objects[i].Collide(objects[i + 1])) { //Если машины наложены, то переопределяем координаты одной из машин на новые (случайные)
-            objects[i + 1].x = RandomInteger(30, canvas.width - 50);
-            objects[i + 1].y = RandomInteger(250, 400) * -1;
+            objects[i + 1].x = carRivalX;
+            objects[i + 1].y = carRivalY;
         }
     }
 
