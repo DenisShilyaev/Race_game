@@ -35,7 +35,7 @@ class Car {
         }
     }
 
-    Collide(car) {
+    Collide(car) { //Обработка коллизий (столкновений) машин.
         let hit = false;
 
         if (this.y < car.y + car.image.height * scale && this.y + this.image.height * scale > car.y) { //Если объекты находятся на одной линии по горизонтали
@@ -80,7 +80,7 @@ class Car {
 let canvas = document.getElementById("canvas"); //Получение холста из DOM
 let ctx = canvas.getContext("2d"); //Получение контекста
 
-let scale = 0.2; //Масштаб машин
+let scale = 0.1; //Масштаб машин
 let speed = 5; //Скорость игры
 
 const Resize = () => {
@@ -196,9 +196,16 @@ const Update = () => { //Обновление игры
         objects.push(new Car("img/car_red.png", RandomInteger(30, canvas.width - 50), RandomInteger(250, 400) * -1));
     }
 
+    for (let i = 0; i < objects.length - 1; i++) { //Ищем машины соперников, которые появились с наложением друг на друга
+        if (objects[i].Collide(objects[i + 1])) {//Если мышины наложены, то переопределяем координаты одной из машин на новые (случайные)
+            objects[i + 1].x = RandomInteger(30, canvas.width - 50);
+            objects[i + 1].y = RandomInteger(250, 400) * -1;
+        }
+    }
+
     let hasDead = false;
 
-    for (let i = 0; i < objects.length; i++) {
+    for (let i = 0; i < objects.length; i++) { //Ищем машины, уехали вниз за пределы поля игры
         objects[i].Update();
         if (objects[i].dead) {
             hasDead = true;
