@@ -29,24 +29,21 @@ html {
     width: 100%;
     font-weight: 900;
     font-size: 3.7em;
-    z-index: 2
+    z-index: 2;
 }
 
 .ml7 .text-wrapper {
     position: relative;
     display: inline-block;
     padding-top: 0.2em;
-    padding-right: 0.05em;
+    padding-right: 0.3em;
     padding-bottom: 0.2em;
     overflow: hidden;
+    float: right;
+    font-family: Verdana;
 }
 
 .ml7 .letter {
-    transform-origin: 0 100%; /* Устанавливает координаты точки, относительно которой будет происходить трансформация элемента */
-    display: inline-block;
+    transform-origin: 0 100%; /* Устанавливает координаты точки, относительно которой будет происходить трансформация элемента */     display: inline-block;
     line-height: 1em;
-}
-
-.text-wrapper {
-    float: right;
 }

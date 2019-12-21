@@ -127,7 +127,7 @@ const KeyDown = (e) => {
 
 window.addEventListener("keydown", function(e) { KeyDown(e); }); //Получение нажатий с клавиатуры
 
-let player = new Car("img/car.png", 200, 200); //Машина игрока
+let player = new Car("img/car.png", canvas.width / 2, canvas.height / 2); //Машина игрока
 
 let objects = []; //Массив машин (игровые объекты)
 
@@ -153,19 +153,18 @@ const Draw = () => { //Работа с графикой
             canvas.height //Высота изображения на холсте
         );
     }
-    for (let i = 0; i < objects.length; i++) { //Отрисовка машины игрока
-        ctx.drawImage(
-            player.image, //Изображение для отрисовки
-            0, //Начальное положение по оси X на изображении
-            0, //Начальное положение по оси Y на изображении
-            player.image.width, //Ширина изображения
-            player.image.height, //Высота изображения
-            player.x, //Положение по оси X на холсте
-            player.y, //Положение по оси Y на холсте
-            player.image.width * scale, //Ширина изображения на холсте, умноженная на масштаб
-            player.image.height * scale //Высота изображения на холсте, умноженная на масштаб
-        );
-    }
+
+    ctx.drawImage( //Отрисовка машины игрока 
+        player.image, //Изображение для отрисовки
+        0, //Начальное положение по оси X на изображении
+        0, //Начальное положение по оси Y на изображении
+        player.image.width, //Ширина изображения
+        player.image.height, //Высота изображения
+        player.x, //Положение по оси X на холсте
+        player.y, //Положение по оси Y на холсте
+        player.image.width * scale, //Ширина изображения на холсте, умноженная на масштаб
+        player.image.height * scale //Высота изображения на холсте, умноженная на масштаб
+    );
 
     for (let i = 0; i < objects.length; i++) { //Отрисовка машин соперников
         ctx.drawImage(
@@ -187,7 +186,53 @@ const Draw = () => { //Работа с графикой
     ctx.fillText("Скорость игры: " + speed, 10, canvas.height - 50) //Выводим текущую скорость игры в заданых координатах
 }
 
+let letters = document.querySelector('.letters');
+let textWrapper = document.querySelector('.ml7 .letters');
 
+const Announcement = (text) => { //Вывод аниммированного сообщение о текущем уровне игры
+
+    letters.innerHTML = text;
+
+    textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
+
+    anime.timeline({})
+        .add({
+            targets: '.ml7 .letter',
+            translateY: ["1.1em", 0],
+            translateX: ["0.55em", 0],
+            translateZ: 0,
+            rotateZ: [180, 0],
+            duration: 750,
+            easing: "easeOutExpo",
+            delay: (el, i) => 50 * i
+        }).add({
+            targets: '.ml7',
+            opacity: 0,
+            duration: 1000,
+            easing: "easeOutExpo",
+            delay: 1000
+        });
+}
+
+const CeckLevel = () => {
+    if (score == 5) {
+        Announcement("Уровень №3!");
+        score += 3;
+        speed += 3;
+    } else if (score == 25) {
+        score += 3;
+        speed += 3;
+        Announcement("Уровень №3!");
+    } else if (score == 45) {
+        score += 3;
+        speed += 3;
+        Announcement("Уровень №4!");
+    } else if (score == 70) {
+        score += 3;
+        speed += 3;
+        Announcement("Уровень №5!");
+    }
+}
 
 const Update = () => { //Обновление игры
     roads[0].Update(roads[1]); //Обновляем дорожное полотно
@@ -231,46 +276,15 @@ const Update = () => { //Обновление игры
             break;
         }
     }
-
-    if (score == 50) {
-        score += 10
-
-    }
-
+    CeckLevel();
     Draw();
 }
 
-const Announcement = (text) => {
-    
-    let letters = document.getElementsByClassName("letters");
-    letters.innerHTML = "много много слов";
-
-    let textWrapper = document.querySelector('.ml7 .letters');
-    textWrapper.innerHTML = textWrapper.textContent.replace(/\S/g, "<span class='letter'>$&</span>");
-
-    anime.timeline({ loop: false })
-        .add({
-            targets: '.ml7 .letter',
-            translateY: ["1.1em", 0],
-            translateX: ["0.55em", 0],
-            translateZ: 0,
-            rotateZ: [180, 0],
-            duration: 750,
-            easing: "easeOutExpo",
-            delay: (el, i) => 50 * i
-        }).add({
-            targets: '.ml7',
-            opacity: 0,
-            duration: 1000,
-            easing: "easeOutExpo",
-            delay: 1000
-        });
-}
-
+let level = 1; //Уровень игры
 
 const Start = () => {
     timer = setInterval(Update, 1000 / 60); //Состояние игры будет обновляться 60 раз в секунду — при такой частоте обновление происходящего будет казаться очень плавным
-    Announcement()
+    Announcement(`Уровень №${level}!`); //Выводим сообщение о текущем уровне игры при старте
 }
 
 const Stop = () => {
