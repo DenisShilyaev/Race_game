@@ -22,7 +22,7 @@ html {
 
 /* ANIMATION TEXT IN GAME */
 
-.ml7 {
+.game_informer {
     position: fixed;
     right: 0;
     bottom: 0;
@@ -32,7 +32,7 @@ html {
     z-index: 2;
 }
 
-.ml7 .text-wrapper {
+.game_informer .text-wrapper {
     position: relative;
     display: inline-block;
     padding-top: 0.2em;
@@ -43,7 +43,7 @@ html {
     font-family: Verdana;
 }
 
-.ml7 .letter {
+.game_informer .letter {
     transform-origin: 0 100%; /* Устанавливает координаты точки, относительно которой будет происходить трансформация элемента */     display: inline-block;
     line-height: 1em;
 }
@@ -67,12 +67,14 @@ html {
     border-radius: 20px;
 }
 
+.modal_h2 {
+    margin-bottom: 4px;
+}
+
 /* ANIMATION TEXT IN MENU */
     
-.text span {
-  font-weight: bold;
+.modal_instruction span {
   display: inline-block;
-  letter-spacing: 5px;
   transition: 2s;
   text-shadow: 0px 0px 0px grey;
   position: relative;   /* relative */
@@ -80,14 +82,14 @@ html {
   left: 0px;
   cursor: default;
 }
-.text span:hover {
+.modal_instruction span:hover {
   text-shadow: -8px 8px 0px grey;
   transition: 0.3s;
   top: -8px;
   left: 8px;
 }
-.text span.space {
-  width: 20px;
+.modal_instruction span.space {
+  width: 8px;
   height: 100%;
 }
 

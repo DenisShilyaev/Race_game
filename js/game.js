@@ -102,19 +102,19 @@ window.addEventListener("resize", Resize); //При изменении разм�
 let overlay = document.querySelector('.overlay'); //Фон модального окна меню
 let modal = document.querySelector('.modal'); //Модальное окно меню
 
-var text = $('.text').text(); //Получаем текст всех элементов с .text
+var text = $('.modal_instruction').text(); //Получаем текст всех элементов с .text
 var textArr = text.split(''); //Заводим текст всех полученных элементов в массив
 
-$('.text').html(''); //Удаляем содержимое из всех элементов с .text
+$('.modal_instruction').html(''); //Удаляем содержимое из всех элементов с .text
 
 $.each(textArr, function(i, v) { //Перебираем массив элементов
     if (v == ' ') { //Если элемен является пробелом, то добавляем span с .space
-        $('.text').append('<span class="space"></span>');
+        $('.modal_instruction').append('<span class="space"></span>');
     }
-    if (v == '1' || v == '2' || v == '3' || v == '4' ) { //Если элемен является ; или ., то добавляем  с .space
-        $('.text').append('<br/>');
+    if (v == '2' || v == '3' || v == '4' ) { //Если элемен является ; или ., то добавляем  с .space
+        $('.modal_instruction').append('<br/>');
     }
-    $('.text').append('<span>' + v + '</span>'); //Добавляем каждый элемент в span
+    $('.modal_instruction').append('<span>' + v + '</span>'); //Добавляем каждый элемент в span
 })
 
 modal.addEventListener("click", function(e) { GameSetup(e); }); //Получение нажатий мыши для меню 
@@ -225,7 +225,7 @@ const Draw = () => { //Работа с графикой
 }
 
 let letters = document.querySelector('.letters');
-let textWrapper = document.querySelector('.ml7 .letters');
+let textWrapper = document.querySelector('.game_informer .letters');
 
 const Announcement = (text) => { //Вывод аниммированного сообщение о текущем уровне игры
 
@@ -235,7 +235,7 @@ const Announcement = (text) => { //Вывод аниммированного с�
 
     anime.timeline({})
         .add({
-            targets: '.ml7 .letter',
+            targets: '.game_informer .letter',
             translateY: ["1.1em", 0],
             translateX: ["0.55em", 0],
             translateZ: 0,
@@ -244,7 +244,7 @@ const Announcement = (text) => { //Вывод аниммированного с�
             easing: "easeOutExpo",
             delay: (el, i) => 50 * i
         }).add({
-            targets: '.ml7',
+            targets: '.game_informer',
             opacity: 0,
             duration: 1000,
             easing: "easeOutExpo",
@@ -254,21 +254,17 @@ const Announcement = (text) => { //Вывод аниммированного с�
 
 const CeckLevel = () => {
     if (score == 5) {
-        Announcement("Уровень №2!");
         score += 3;
         speedGame += 1;
     } else if (score == 25) {
         score += 3;
         speedGame += 1;
-        Announcement("Уровень №3!");
     } else if (score == 45) {
         score += 3;
         speedGame += 2;
-        Announcement("Уровень №4!");
     } else if (score == 70) {
         score += 3;
         speedGame += 3;
-        Announcement("Уровень №5!");
     }
 }
 
@@ -331,11 +327,9 @@ const Update = () => { //Обновление игры
     Draw();
 }
 
-let level = 1; //Уровень игры
-
 const Start = () => {
     timer = setInterval(Update, 1000 / 60); //Состояние игры будет обновляться 60 раз в секунду — при такой частоте обновление происходящего будет казаться очень плавным
-    Announcement(`Уровень №${level}!`); //Выводим сообщение о текущем уровне игры при старте
+    Announcement(`Поехали!`); //Выводим сообщение о текущем уровне игры при старте
 }
 
 const Stop = () => {
