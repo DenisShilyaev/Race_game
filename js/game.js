@@ -8,10 +8,10 @@ class Road {
     }
 
     Update(road) {
-        this.y += speed; //При обновлении изображение смещается вниз
+        this.y += speedGame; //При обновлении изображение смещается вниз
 
-        if (this.y > window.innerHeight) { //Если изображение ушло за край холста, то меняем положение
-            this.y = road.y - this.image.height + speed; //Новое положение указывается с учётом второго фона
+        if (this.y > window.innerHeight) { //Если изображение ушло за средину холста, то меняем положение
+            this.y = road.y - this.image.height + speedGame; //Новое положение указывается с учётом второго фона
         }
     }
 }
@@ -28,7 +28,7 @@ class Car {
     }
 
     Update() { //Движение машинок соперников вниз
-        this.y += speed;
+        this.y += speedGame;
 
         if (this.y > canvas.height + 50) { //Удаляем машину из массива "object" если она уехала вниз за пределы поля игры
             this.dead = true;
@@ -81,7 +81,9 @@ let canvas = document.getElementById("canvas"); //Получение холст�
 let ctx = canvas.getContext("2d"); //Получение контекста
 
 let scale = 0.11; //Масштаб машин
-let speed = 5; //Скорость игры
+let speedGame = 5; //Скорость игры (скорость машин соперников и дороги)
+let speedPlayer = 10; //Скорость мышины игрока
+
 
 const Resize = () => { //Задаем размер холста равный размеру окна
     canvas.width = window.innerWidth;
@@ -97,18 +99,33 @@ const RandomInteger = (min, max) => { //Функция генерации слу
 
 window.addEventListener("resize", Resize); //При изменении размеров окна будут меняться размеры холста
 
-let overlay = document.querySelector('.overlay');
-let modal = document.querySelector('.modal');
+let overlay = document.querySelector('.overlay'); //Фон модального окна меню
+let modal = document.querySelector('.modal'); //Модальное окно меню
 
-modal.addEventListener("click", function(e) { GameSetup(e); }); //Получение нажатий с клавиатуры для игры
+var text = $('.text').text(); //Получаем текст всех элементов с .text
+var textArr = text.split(''); //Заводим текст всех полученных элементов в массив
+
+$('.text').html(''); //Удаляем содержимое из всех элементов с .text
+
+$.each(textArr, function(i, v) { //Перебираем массив элементов
+    if (v == ' ') { //Если элемен является пробелом, то добавляем span с .space
+        $('.text').append('<span class="space"></span>');
+    }
+    if (v == '1' || v == '2' || v == '3' || v == '4' ) { //Если элемен является ; или ., то добавляем  с .space
+        $('.text').append('<br/>');
+    }
+    $('.text').append('<span>' + v + '</span>'); //Добавляем каждый элемент в span
+})
+
+modal.addEventListener("click", function(e) { GameSetup(e); }); //Получение нажатий мыши для меню 
 
 const GameSetup = (e) => {
     if (e.target.classList.contains('easy')) { //Настраиваем уровни сложности игры
-        speed = 4;
+        speedGame = 4;
     } else if (e.target.classList.contains('normal')) {
-        speed = 5;
+        speedGame = 5;
     } else if (e.target.classList.contains('hard')) {
-        speed = 6;
+        speedGame = 6;
     }
     if (e.target.classList.contains('button')) { //Делаем меню невидимым и начинаем игру после нажатия на любую кнопку в меню
         modal.style.display = 'none';
@@ -120,19 +137,19 @@ const GameSetup = (e) => {
 const KeyDown = (e) => {
     switch (e.keyCode) {
         case 37: //Влево
-            player.Move("x", -speed);
+            player.Move("x", -speedPlayer);
             break;
 
         case 39: //Вправо
-            player.Move("x", speed);
+            player.Move("x", speedPlayer);
             break;
 
         case 38: //Вверх
-            player.Move("y", -speed);
+            player.Move("y", -speedPlayer);
             break;
 
         case 40: //Вниз
-            player.Move("y", speed);
+            player.Move("y", speedPlayer);
             break;
 
         case 27: //Esc
@@ -153,6 +170,7 @@ let objects = []; //Массив машин (игровые объекты)
 
 let roads = [
     new Road("img/road.jpg", 0),
+    new Road("img/road.jpg", 313),
     new Road("img/road.jpg", 626)
 ]; //Массив с фонами
 
@@ -203,7 +221,7 @@ const Draw = () => { //Работа с графикой
     ctx.fillStyle = "#000"; //Задаем цвет текста для отображения текущего счета
     ctx.font = "24px Verdana"; //Задаем размер и стиль текста для отображения текущего счета
     ctx.fillText("Счет: " + score, 10, canvas.height - 20) //Выводим текущий счет в заданых координатах
-    ctx.fillText("Скорость игры: " + speed, 10, canvas.height - 50) //Выводим текущую скорость игры в заданых координатах
+    ctx.fillText("Скорость игры: " + speedGame, 10, canvas.height - 50) //Выводим текущую скорость игры в заданых координатах
 }
 
 let letters = document.querySelector('.letters');
@@ -238,27 +256,28 @@ const CeckLevel = () => {
     if (score == 5) {
         Announcement("Уровень №2!");
         score += 3;
-        speed += 1;
+        speedGame += 1;
     } else if (score == 25) {
         score += 3;
-        speed += 1;
+        speedGame += 1;
         Announcement("Уровень №3!");
     } else if (score == 45) {
         score += 3;
-        speed += 1;
+        speedGame += 2;
         Announcement("Уровень №4!");
     } else if (score == 70) {
         score += 3;
-        speed += 1;
+        speedGame += 3;
         Announcement("Уровень №5!");
     }
 }
 
 const Update = () => { //Обновление игры
     roads[0].Update(roads[1]); //Обновляем дорожное полотно
-    roads[1].Update(roads[0]);
+    roads[1].Update(roads[2]);
+    roads[2].Update(roads[0]);
 
-    carRivalX = RandomInteger(30, canvas.width - 50);//Случайная координата Х появления новой машины соперника
+    carRivalX = RandomInteger(30, canvas.width - 50); //Случайная координата Х появления новой машины соперника
     carRivalY = RandomInteger(250, 400) * -1; //Случайная координата У появления новой машины соперника
     random0_10000 = RandomInteger(0, 10000); //Случайное число от 0 до 10000 
 
@@ -266,7 +285,7 @@ const Update = () => { //Обновление игры
         objects.push(new Car("img/car_rival_1.png", carRivalX, carRivalY));
     } else if (9751 < random0_10000 && random0_10000 < 9800) {
         objects.push(new Car("img/car_rival_2.png", carRivalX, carRivalY));
-    }  else if (9801 < random0_10000 && random0_10000 < 9850) {
+    } else if (9801 < random0_10000 && random0_10000 < 9850) {
         objects.push(new Car("img/car_rival_3.png", carRivalX, carRivalY));
     } else if (9851 < random0_10000 && random0_10000 < 9900) {
         objects.push(new Car("img/car_rival_4.png", carRivalX, carRivalY));
@@ -300,7 +319,7 @@ const Update = () => { //Обновление игры
         hit = player.Collide(objects[i]); //Определяем столкновение машины игрока с машиной соперника
 
         if (hit) { // Если столкновение произошло, то останавливаем игру и выводим сообщение о окончании игры 
-            let endGame = confirm(`Конец игры.\r\nВаши очки: ${score}.\r\nДостигнутая скорость игры: ${speed}.\r\nСыграете еще раз?`);
+            let endGame = confirm(`Конец игры.\r\nВаши очки: ${score}.\r\nДостигнутая скорость игры: ${speedGame}.\r\nСыграете еще раз?`);
             Stop();
             if (endGame) {
                 location.reload()
