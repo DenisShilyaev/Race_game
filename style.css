@@ -44,7 +44,9 @@ html {
 }
 
 .game_informer .letter {
-    transform-origin: 0 100%; /* Устанавливает координаты точки, относительно которой будет происходить трансформация элемента */     display: inline-block;
+    transform-origin: 0 100%;
+    /* Устанавливает координаты точки, относительно которой будет происходить трансформация элемента */
+    display: inline-block;
     line-height: 1em;
 }
 
@@ -67,30 +69,41 @@ html {
     border-radius: 20px;
 }
 
+.modal_h1 {
+    font-weight: 800;
+    font-size: 2.8em;
+}
+
+.word_h1 {
+    display: inline-block;
+}
+
 .modal_h2 {
     margin-bottom: 4px;
 }
 
 /* ANIMATION TEXT IN MENU */
-    
+
 .modal_instruction span {
-  display: inline-block;
-  transition: 2s;
-  text-shadow: 0px 0px 0px grey;
-  position: relative;   /* relative */
-  top: 0px;
-  left: 0px;
-  cursor: default;
+    display: inline-block;
+    transition: 2s;
+    text-shadow: 0px 0px 0px grey;
+    position: relative;
+    top: 0px;
+    left: 0px;
+    cursor: default;
 }
+
 .modal_instruction span:hover {
-  text-shadow: -8px 8px 0px grey;
-  transition: 0.3s;
-  top: -8px;
-  left: 8px;
+    text-shadow: -8px 8px 0px grey;
+    transition: 0.3s;
+    top: -8px;
+    left: 8px;
 }
+
 .modal_instruction span.space {
-  width: 8px;
-  height: 100%;
+    width: 8px;
+    height: 100%;
 }
 
 /* BUTTON IN MENU */
@@ -124,5 +137,3 @@ html {
     background-size: 100%;
 
 }
-
-

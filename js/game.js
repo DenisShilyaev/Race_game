@@ -92,34 +92,44 @@ const Resize = () => { //Задаем размер холста равный р�
 
 Resize(); // При загрузке страницы задаётся размер холста
 
-const RandomInteger = (min, max) => { //Функция генерации случайных чисел
-    let rand = min - 0.5 + Math.random() * (max - min + 1);
-    return Math.round(rand);
+window.addEventListener("resize", Resize); //При изменении размеров окна будут меняться размеры холста
+
+let text = $('.modal_instruction').text(); //Получаем текст всех элементов с .text
+let textArr = text.split(''); //Заводим текст всех полученных элементов в массив
+
+
+const AnimateModalHeading = () => { //Аниммация текста заголовка игры
+    anime.timeline({  })
+        .add({
+            targets: '.modal_h1 .word_h1',
+            scale: [14, 1],
+            opacity: [0, 1],
+            easing: "easeOutCirc",
+            duration: 800,
+            delay: (el, i) => 800 * i
+        })
 }
 
-window.addEventListener("resize", Resize); //При изменении размеров окна будут меняться размеры холста
+const AnimateModalInstruction = () => { //Аннимация текста инструкции к игре
+    $('.modal_instruction').html(''); //Удаляем содержимое из всех элементов с .text
+
+    $.each(textArr, function(i, v) { //Перебираем массив элементов
+        if (v == ' ') { //Если элемен является пробелом, то добавляем span с .space
+            $('.modal_instruction').append('<span class="space"></span>');
+        }
+        if (v == '2' || v == '3' || v == '4') { //Если элемен является ; или ., то добавляем  с .space
+            $('.modal_instruction').append('<br/>');
+        }
+        $('.modal_instruction').append('<span>' + v + '</span>'); //Добавляем каждый элемент в span
+    })
+}
 
 let overlay = document.querySelector('.overlay'); //Фон модального окна меню
 let modal = document.querySelector('.modal'); //Модальное окно меню
 
-var text = $('.modal_instruction').text(); //Получаем текст всех элементов с .text
-var textArr = text.split(''); //Заводим текст всех полученных элементов в массив
-
-$('.modal_instruction').html(''); //Удаляем содержимое из всех элементов с .text
-
-$.each(textArr, function(i, v) { //Перебираем массив элементов
-    if (v == ' ') { //Если элемен является пробелом, то добавляем span с .space
-        $('.modal_instruction').append('<span class="space"></span>');
-    }
-    if (v == '2' || v == '3' || v == '4' ) { //Если элемен является ; или ., то добавляем  с .space
-        $('.modal_instruction').append('<br/>');
-    }
-    $('.modal_instruction').append('<span>' + v + '</span>'); //Добавляем каждый элемент в span
-})
-
 modal.addEventListener("click", function(e) { GameSetup(e); }); //Получение нажатий мыши для меню 
 
-const GameSetup = (e) => {
+const GameSetup = (e) => { //Меню игры
     if (e.target.classList.contains('easy')) { //Настраиваем уровни сложности игры
         speedGame = 4;
     } else if (e.target.classList.contains('normal')) {
@@ -227,7 +237,7 @@ const Draw = () => { //Работа с графикой
 let letters = document.querySelector('.letters');
 let textWrapper = document.querySelector('.game_informer .letters');
 
-const Announcement = (text) => { //Вывод аниммированного сообщение о текущем уровне игры
+const Announcement = (text) => { //Вывод аниммированного сообщения внизу игрокого поля
 
     letters.innerHTML = text;
 
@@ -266,6 +276,11 @@ const CeckLevel = () => {
         score += 3;
         speedGame += 3;
     }
+}
+
+const RandomInteger = (min, max) => { //Функция генерации случайных чисел
+    let rand = min - 0.5 + Math.random() * (max - min + 1);
+    return Math.round(rand);
 }
 
 const Update = () => { //Обновление игры
@@ -335,3 +350,6 @@ const Start = () => {
 const Stop = () => {
     clearInterval(timer); //Остановка обновления
 }
+
+AnimateModalHeading ();
+AnimateModalInstruction();
