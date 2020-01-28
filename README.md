@@ -1,6 +1,9 @@
 # Гонки
 Небольшая игра. Создана с целью практики работы на Javascript.
 
+## Инструкция
+Чтобы запустить проект откройте файл: ... / Race_game / index.html в любом браузере.
+
 ## Описание игры
 Смотрите рисунок начального экрана ниже:
 ![StartMenu](https://github.com/DenisShilyaev/Race_game/raw/master/for_README/StartMenu.PNG)
